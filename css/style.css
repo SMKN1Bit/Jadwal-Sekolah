@@ -772,44 +772,85 @@ img {
   height: 39px;
 }
 
-/* Linework luar seragam — warna tetap agar kontras di atas semua warna isian */
-.uniform-outline {
-  fill: none;
-  stroke: #2b2f3d;
-  stroke-width: 2.6;
-  stroke-linejoin: round;
-  stroke-linecap: round;
+/* Setiap "tampilan" (baju + celana) ditumpuk lewat <g class="uniform-look">;
+   untuk Jumat ada dua tampilan yang silih berganti lewat animasi opacity. */
+.uniform-look { }
+.uniform-look-a {
+  animation: uniformLookFade 12s ease-in-out infinite;
 }
-/* Gantungan baju — mengikuti warna teks sekunder supaya menyesuaikan tema */
-.uniform-hanger {
-  fill: none;
-  stroke: var(--text-muted);
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.uniform-look-b {
+  animation: uniformLookFade 12s ease-in-out infinite;
+  animation-delay: -6s;
+}
+@keyframes uniformLookFade {
+  0%, 38%  { opacity: 1; }
+  50%      { opacity: 0; }
+  88%, 100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .uniform-shirt-pastel-anim .uniform-shirt-fill,
+  .uniform-look-a,
+  .uniform-look-b {
+    animation: none;
+  }
+  .uniform-look-b { opacity: 0; }
 }
 
-/* Senin & Selasa — seragam nasional: putih & abu-abu */
-.uniform-shirt-putih { fill: #fbfbfd; }
+/* Detail dekoratif (kancing, saku, motif, lambang) — dianggap satu warna
+   aksen yang lebih gelap/kontras dari warna dasar baju masing-masing. */
+.uniform-shirt-accent { stroke: none; }
+
+/* Senin & Selasa — seragam nasional: putih & abu-abu, celana panjang */
+.uniform-shirt-putih .uniform-shirt-fill {
+  fill: #eef0f5;
+  stroke: var(--text);
+  stroke-width: 10;
+}
 .uniform-pants-abu { fill: #9aa1ad; }
 
-/* Rabu — seragam identitas jurusan: gradasi warna berjalan pelan-pelan */
-.uniform-pants-netral { fill: #575f6e; }
-.uniform-shirt-gradient {
+/* Rabu — identitas jurusan: gradasi pastel lembut, tetap berjalan pelan
+   (animasi sama seperti sebelumnya, hanya warnanya yang dilembutkan) */
+.uniform-shirt-pastel-anim .uniform-shirt-fill {
   fill: url(#uniformRabuGradient);
+  stroke: var(--text);
+  stroke-width: 10;
   animation: uniformHueShift 10s linear infinite;
 }
 @keyframes uniformHueShift {
   from { filter: hue-rotate(0deg); }
   to   { filter: hue-rotate(360deg); }
 }
+.uniform-pants-netral { fill: #838a9a; }
 
-/* Kamis — batik sekolah: putih + biru pastel + biru */
-.uniform-pants-gelap { fill: #2c2f38; }
+/* Kamis — batik sekolah: dasar putih + motif biru & biru pastel, celana
+   abu-abu senada Senin/Selasa */
+.uniform-shirt-batik .uniform-shirt-outline {
+  fill: none;
+  stroke: #2f63c2;
+  stroke-width: 10;
+}
+.uniform-shirt-batik .uniform-shirt-accent { fill: #2f63c2; }
 
-/* Jumat — olahraga: biru tua & biru pastel */
-.uniform-shirt-navy { fill: #1e3a75; }
-.uniform-pants-pastel { fill: #aecbef; }
+/* Jumat, tampilan 1 — Pramuka: coklat muda (atasan) & coklat tua
+   (celana panjang) */
+.uniform-shirt-pramuka .uniform-shirt-fill {
+  fill: #caa06d;
+  stroke: #7a5330;
+  stroke-width: 10;
+}
+.uniform-shirt-pramuka .uniform-shirt-accent { fill: #8a6239; }
+.uniform-pants-coklat-tua { fill: #5c3d22; }
+
+/* Jumat, tampilan 2 — Olahraga: gradasi biru agak tua ke biru pastel,
+   dengan blok hitam di bahu & perut (±30% dari luas baju), celana
+   pendek hitam */
+.uniform-shirt-olahraga .uniform-shirt-outline {
+  fill: none;
+  stroke: #1c2f4d;
+  stroke-width: 10;
+}
+.uniform-olahraga-block { fill: #15181d; }
+.uniform-pants-hitam { fill: #15181d; }
 
 /* -------------------------------------------------------------------
    15. KARTU JADWAL
@@ -894,52 +935,98 @@ img {
 .facts-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--sp-4);
+  gap: var(--sp-5);
 }
 
 .fact-card-head {
   display: flex;
   align-items: center;
-  gap: var(--sp-3);
-  margin-bottom: var(--sp-4);
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
   padding-bottom: var(--sp-4);
   border-bottom: 1px solid var(--border);
 }
-.fact-card-head .icon { color: var(--accent); width: 22px; height: 22px; }
-.fact-card-head h3 { font-size: 1.05rem; font-weight: 700; }
+.fact-card-head h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
 
-.fact-list { display: flex; flex-direction: column; }
-.fact-item {
+/* -------- Ilustrasi (dulu: satu ikon garis kecil yang diulang) --------
+   Sekarang tiap kartu punya ubin ilustrasi dua-warna sendiri; warna
+   diambil dari --fact-accent yang di-set inline per kartu (lihat
+   renderFunFacts di app.js) memakai token warna tema yang sudah ada,
+   supaya otomatis pas di terang maupun gelap tanpa kode tambahan. */
+.fact-illustration {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fact-accent, var(--accent));
+  background: color-mix(in srgb, var(--fact-accent, var(--accent)) 15%, var(--surface));
+}
+.fact-illustration svg { width: 32px; height: 32px; }
+
+/* -------- Statistik ringkas — kotak angka besar, bukan baris sempit -------- */
+.fact-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(94px, 1fr));
+  align-items: start;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.fact-stat {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-muted);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-3) var(--sp-3) var(--sp-3);
+}
+.fact-stat-number {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--fact-accent, var(--accent));
+  font-variant-numeric: tabular-nums;
+}
+.fact-stat-unit {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 1px;
+  overflow-wrap: anywhere;
+}
+.fact-stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+  margin-top: var(--sp-1);
+  overflow-wrap: anywhere;
+}
+
+/* -------- Baris deskriptif — mengalir sebagai teks, tidak dipaksa dua
+   kolom, supaya label/nilai yang panjang tidak berdempetan -------- */
+.fact-list {
+  display: flex;
+  flex-direction: column;
+}
+.fact-text {
   padding: var(--sp-3) 0;
   border-bottom: 1px solid var(--border);
   font-size: 0.92rem;
   color: var(--text);
-  line-height: 1.55;
+  line-height: 1.6;
+  overflow-wrap: break-word;
 }
-.fact-item:last-child { border-bottom: none; }
-
-/* Baris berpola "label : nilai" — tampil sebagai dua kolom yang rapi
-   (label di kiri, nilai di kanan), alih-alih satu kalimat panjang. */
-.fact-item--pair {
-  display: flex;
-  align-items: baseline;
-  gap: var(--sp-3);
-}
-.fact-item-label {
-  font-weight: 600;
-  color: var(--text);
-  flex: 0 1 50%;
-}
-.fact-item-value {
-  color: var(--text-muted);
-  font-weight: 500;
-  text-align: right;
-  flex: 1 1 50%;
-}
-
-/* Baris tanpa pola label/nilai (kalimat biasa) tetap sebagai teks penuh */
-.fact-item--plain {
-  color: var(--text);
+.fact-text:last-child { border-bottom: none; }
+.fact-stats + .fact-list .fact-text:first-child { padding-top: var(--sp-4); }
+.fact-text-label {
+  font-weight: 700;
+  color: var(--fact-accent, var(--accent));
 }
 
 /* -------------------------------------------------------------------
