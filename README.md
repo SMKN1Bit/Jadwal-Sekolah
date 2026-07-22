@@ -120,18 +120,17 @@ testing).
   Tidak ada teknik front-end yang benar-benar kedap terhadap pengguna
   yang membuka DevTools atau mengambil screenshot layar.
 
-**Screenshot manifest (baru)**
-- `screenshots/screenshot-narrow.png` & `screenshot-wide.png` sebelumnya
-  adalah file placeholder yang identik (512×512, sama persis) padahal
-  `manifest.json` mendeklarasikan ukuran 824×1830 dan 1920×1200 — tidak
-  cocok dengan file aslinya. Sekarang keduanya diganti tangkapan layar
-  asli dari aplikasi (bukan mockup): layar **Jadwal** 1080×2400 untuk
-  `form_factor: "narrow"`, dan layar **Beranda** 1920×1080 untuk
-  `form_factor: "wide"` — `sizes` di manifest sudah disesuaikan agar
-  cocok. Ini dipakai Chrome/Android (termasuk Chrome di iOS) untuk
-  pratinjau "richer install UI"; Safari asli di iPhone tidak memakai
-  field ini sama sekali untuk Add to Home Screen, jadi perbaikan ini
-  murni soal konsistensi & Android.
+**Screenshot manifest (disederhanakan jadi 1 gambar 1:1)**
+- Sebelumnya ada 2 file (`screenshot-narrow.png` 1080×2400 untuk
+  `form_factor: "narrow"`, dan `screenshot-wide.png` 1920×1080 untuk
+  `form_factor: "wide"`). Sekarang disatukan jadi **satu** file:
+  `screenshots/screenshot-home-square.png` (1080×1080, rasio 1:1),
+  tangkapan layar asli dari layar Beranda (bukan mockup), tanpa
+  `form_factor` di manifest — jadi dipakai sebagai pratinjau "richer
+  install UI" di Chrome/Android/desktop apa pun tanpa perlu deteksi
+  lebar layar. Safari di iPhone tetap tidak memakai field ini sama
+  sekali untuk Add to Home Screen, jadi ini murni soal konsistensi
+  tampilan preview instalasi di Chrome/Edge/Android.
 
 **Panduan install iOS (baru: deteksi browser)**
 - Modal "Cara Install di iPhone" sudah ada sejak awal (tombol Share →

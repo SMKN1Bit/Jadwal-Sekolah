@@ -38,18 +38,10 @@
   ],
   "screenshots": [
     {
-      "src": "screenshots/screenshot-narrow.png",
-      "sizes": "1080x2400",
+      "src": "screenshots/screenshot-home-square.png",
+      "sizes": "1254x1254",
       "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Jadwal pelajaran per jurusan yang rapi dan mudah dibaca"
-    },
-    {
-      "src": "screenshots/screenshot-wide.png",
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Tampilan beranda di layar lebar"
+      "label": "Beranda Jadwal Pelajaran SMK Negeri 1 Bitung — pilih tingkatan kelas"
     }
   ]
 }
