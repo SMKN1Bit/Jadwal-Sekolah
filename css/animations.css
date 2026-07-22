@@ -1,0 +1,54 @@
+/* ===================================================================
+   ANIMASI — disengaja dan secukupnya.
+   Tidak ada lagi animasi "mengapung" idle yang terus-menerus berjalan;
+   gerak hanya dipakai saat ada perubahan state yang perlu ditegaskan.
+   =================================================================== */
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes screenEnterRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes screenEnterLeft {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.screen.active {
+  animation: fadeIn var(--dur-normal) var(--ease);
+}
+
+.screen.enter-right { animation: screenEnterRight var(--dur-normal) var(--ease); }
+.screen.enter-left { animation: screenEnterLeft var(--dur-normal) var(--ease); }
+
+/* Daftar yang muncul bertahap (kartu rombel, baris jadwal, kartu fakta) */
+.stagger-item {
+  opacity: 0;
+  animation: fadeSlideUp var(--dur-normal) var(--ease) forwards;
+}
+
+/* Modal */
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.modal-overlay:not([hidden]) .modal {
+  animation: modalIn var(--dur-normal) var(--ease);
+}
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.modal-overlay:not([hidden]) {
+  animation: overlayIn var(--dur-fast) var(--ease);
+}

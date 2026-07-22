@@ -1,0 +1,1089 @@
+/* ===================================================================
+   JADWAL PELAJARAN — SMK NEGERI 1 BITUNG
+   Desain: kartu, simetris, effortless, akademis.
+   =================================================================== */
+
+/* -------------------------------------------------------------------
+   0. RESET GLOBAL
+   Menghapus kotak highlight biru semi-transparan yang muncul di iOS/
+   Android saat elemen disentuh, sekaligus reset box-model standar.
+   ------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* The `hidden` attribute must always win over a component's own
+   `display` declaration (e.g. `.continue-card { display: flex }`),
+   otherwise elements like the back button or install card can leak
+   through even while marked hidden. */
+[hidden] {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------
+   1. DESIGN TOKENS
+   ------------------------------------------------------------------- */
+:root {
+  /* Tipografi — font sistem bawaan (tanpa request jaringan, tampil
+     instan, dan otomatis terasa "native" di iOS maupun Android). */
+  --font-display: Georgia, 'Iowan Old Style', 'Apple Garamond', 'Noto Serif', 'Times New Roman', serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* Skala spasi */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 28px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+
+  /* Radius & garis */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --radius-full: 999px;
+
+  /* Gerak — halus & singkat, sesuai nada "effortless" */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 140ms;
+  --dur-normal: 220ms;
+  --dur-slow: 320ms;
+
+  /* Lebar konten maksimum */
+  --content-max: 640px;
+
+  /* Safe-area iOS (fallback 0 di perangkat tanpa notch) */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* --- Tema Terang (default / "putih") --- */
+:root[data-theme='light'] {
+  --bg: #ffffff;
+  --bg-muted: #f4f5f8;
+  --surface: #ffffff;
+  --surface-hover: #f7f8fb;
+  --border: #e6e8ee;
+  --text: #1b1f2a;
+  --text-muted: #636b7a;
+  --accent: #2c3e91;
+  --accent-strong: #1f2d6e;
+  --accent-soft: #eceffb;
+  --accent-contrast: #ffffff;
+  --gold: #a8782b;
+  --gold-soft: #f8efdc;
+  --gold-text: #8a5f1e;
+  --danger: #b3261e;
+  --danger-soft: #fbeceb;
+
+  --shadow-sm: 0 1px 2px rgba(22, 26, 45, 0.05);
+  --shadow-md: 0 6px 16px rgba(22, 26, 45, 0.07), 0 1px 3px rgba(22, 26, 45, 0.05);
+  --shadow-lg: 0 16px 36px rgba(22, 26, 45, 0.12), 0 2px 6px rgba(22, 26, 45, 0.06);
+
+  /* Warna mata pelajaran — dipakai sebagai chip, tetap tenang & jelas */
+  --subj-matematika: #c8403f;
+  --subj-ipa: #178f72;
+  --subj-ips: #b9831c;
+  --subj-bindo: #2f63c9;
+  --subj-binggris: #6c52c9;
+  --subj-pkn: #c14589;
+  --subj-agama: #1992a6;
+  --subj-pjok: #c8711f;
+  --subj-prakarya: #1c9387;
+  --subj-tik: #4f54bf;
+  --subj-mulok: #748f1e;
+  --subj-projek: #7a6f63;
+  --subj-istirahat: #8a93a3;
+  --subj-lainnya: #5d6677;
+  --subj-sejarah: #a15c2e;
+  --subj-senibudaya: #c14589;
+  --subj-informatika: #4f54bf;
+  --subj-wirausaha: #b9831c;
+  --subj-produktif: var(--accent);
+}
+
+/* --- Tema Gelap --- */
+:root[data-theme='dark'] {
+  --bg: #11141b;
+  --bg-muted: #161a23;
+  --surface: #181c26;
+  --surface-hover: #1f2430;
+  --border: #2a2f3c;
+  --text: #e9ebf0;
+  --text-muted: #9aa3b5;
+  --accent: #7c93e8;
+  --accent-strong: #aebbf2;
+  --accent-soft: #1d2436;
+  --accent-contrast: #0d1020;
+  --gold: #dcab57;
+  --gold-soft: #2a2419;
+  --gold-text: #dcab57;
+  --danger: #ff6b63;
+  --danger-soft: #2c1a1a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.38);
+  --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.5);
+
+  --subj-matematika: #e98b87;
+  --subj-ipa: #54d9b6;
+  --subj-ips: #e3bb63;
+  --subj-bindo: #82aaf2;
+  --subj-binggris: #b6a3ef;
+  --subj-pkn: #ec92c4;
+  --subj-agama: #62d2e5;
+  --subj-pjok: #f0ab72;
+  --subj-prakarya: #5fdacb;
+  --subj-tik: #a3a6f2;
+  --subj-mulok: #bcdb70;
+  --subj-projek: #b3a596;
+  --subj-istirahat: #aab3c2;
+  --subj-lainnya: #9aa3b5;
+  --subj-sejarah: #e0a876;
+  --subj-senibudaya: #ec92c4;
+  --subj-informatika: #a3a6f2;
+  --subj-wirausaha: #e3bb63;
+  --subj-produktif: var(--accent);
+}
+
+/* -------------------------------------------------------------------
+   2. RESET LANJUTAN & PERILAKU HALAMAN
+   ------------------------------------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  /* Sembunyikan efek scroll-bounce berlebih di iOS Safari */
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--dur-normal) var(--ease), color var(--dur-normal) var(--ease);
+}
+
+a { color: inherit; }
+
+button {
+  font-family: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+ul, ol { list-style: none; }
+
+img {
+  display: block;
+  max-width: 100%;
+  /* Proteksi dasar terhadap unduhan kasual untuk <img> apa pun yang
+     ditambahkan di masa depan (lihat #15 di js/app.js untuk klik-kanan). */
+  -webkit-touch-callout: none; /* iOS Safari: matikan menu tekan-tahan */
+  -webkit-user-drag: none;     /* Safari/Chrome: cegah drag keluar halaman */
+  user-select: none;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------------
+   3. APP BAR
+   ------------------------------------------------------------------- */
+.appbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: calc(var(--safe-top) + var(--sp-3)) max(var(--sp-4), var(--safe-right)) var(--sp-3) max(var(--sp-4), var(--safe-left));
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+}
+
+.appbar-spacer { flex: 1; }
+
+.appbar-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 40px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--radius-full);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.appbar-btn--icon {
+  width: 40px;
+  padding: 0;
+  justify-content: center;
+}
+
+.appbar-btn:hover { background: var(--surface-hover); }
+.appbar-btn:active { background: var(--accent-soft); }
+
+/* Ikon sun/moon bersilangan, sama seperti pendekatan asli, tapi lebih senyap */
+.icon-sun, .icon-moon {
+  position: absolute;
+  transition: opacity var(--dur-normal) var(--ease), transform var(--dur-normal) var(--ease);
+}
+#themeToggle { position: relative; }
+:root[data-theme='light'] .icon-moon,
+:root[data-theme='dark'] .icon-sun {
+  opacity: 0;
+  transform: scale(0.5) rotate(-45deg);
+}
+:root[data-theme='light'] .icon-sun,
+:root[data-theme='dark'] .icon-moon {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+/* -------------------------------------------------------------------
+   4. LAYOUT UTAMA
+   ------------------------------------------------------------------- */
+.container {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--sp-5) max(var(--sp-4), var(--safe-right)) calc(var(--sp-12) + var(--safe-bottom)) max(var(--sp-4), var(--safe-left));
+  position: relative;
+}
+
+.screen {
+  display: none;
+}
+.screen.active {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* -------------------------------------------------------------------
+   5. BREADCRUMB
+   ------------------------------------------------------------------- */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-2);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.crumb {
+  border-radius: var(--radius-sm);
+  padding: var(--sp-1) var(--sp-2);
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.crumb:hover { background: var(--surface-hover); color: var(--text); }
+.crumb[aria-current='true'] {
+  color: var(--accent);
+}
+.crumb-sep {
+  color: var(--border);
+  display: inline-flex;
+}
+.crumb-sep .icon { width: 14px; height: 14px; }
+
+/* -------------------------------------------------------------------
+   6. KARTU — komponen dasar
+   ------------------------------------------------------------------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--sp-6);
+  transition: box-shadow var(--dur-normal) var(--ease), border-color var(--dur-normal) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: var(--sp-5);
+  color: var(--text);
+}
+
+/* -------------------------------------------------------------------
+   7. HERO (Beranda)
+   ------------------------------------------------------------------- */
+.hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--sp-8) var(--sp-6) var(--sp-7);
+}
+
+/* -------------------------------------------------------------------
+   7b. PROTEKSI LOGO (lihat README bagian "Proteksi aset gambar")
+   .logo-frame   → bungkus posisi relative untuk shield di bawah
+   .school-logo  → logo dipasang sbg CSS background-image, BUKAN <img>,
+                   sehingga browser tidak menawarkan menu "Simpan
+                   Gambar Sebagai..." sama sekali untuk elemen ini
+   .logo-shield  → lapisan transparan di atas logo; menangkap klik-
+                   kanan/tap-tahan sebagai lapisan pertahanan tambahan
+   ------------------------------------------------------------------- */
+.logo-frame {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  margin-bottom: var(--sp-4);
+}
+
+.school-logo {
+  width: 100%;
+  height: 100%;
+  background-image: url('../assets/logo.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.logo-shield {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Kelas util bila nanti menambah gambar lain (mis. galeri foto kegiatan
+   sekolah) yang juga perlu dilindungi dari unduhan kasual. */
+.protected-img {
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: var(--sp-2);
+}
+
+.school-name {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.25;
+}
+
+.hero-rule {
+  width: 56px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: var(--gold);
+  margin: var(--sp-4) 0;
+}
+
+.today-date {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+/* -------------------------------------------------------------------
+   8. KARTU "LANJUTKAN"
+   ------------------------------------------------------------------- */
+.continue-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+  text-align: left;
+  padding: var(--sp-5) var(--sp-6);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.continue-card:hover { box-shadow: var(--shadow-md); }
+.continue-card:active { transform: scale(0.99); }
+
+.continue-icon { color: var(--accent); }
+
+.continue-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.continue-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.continue-target {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.chevron { color: var(--text-muted); width: 18px; height: 18px; }
+
+/* -------------------------------------------------------------------
+   9. PEMILIH KELAS (Beranda)
+   ------------------------------------------------------------------- */
+.grade-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+}
+
+.grade-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  transition: all var(--dur-fast) var(--ease);
+}
+
+.grade-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.grade-btn:active { transform: translateY(0) scale(0.98); }
+
+.grade-roman {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.grade-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* -------------------------------------------------------------------
+   9b. PEMILIH JURUSAN (Konsentrasi Keahlian)
+   ------------------------------------------------------------------- */
+.jurusan-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.jurusan-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+  text-align: left;
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--dur-fast) var(--ease);
+}
+.jurusan-btn:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.jurusan-btn:active { transform: translateY(0) scale(0.99); }
+
+.jurusan-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  letter-spacing: 0.01em;
+  text-align: center;
+  line-height: 1.15;
+}
+
+.jurusan-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.jurusan-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+.jurusan-sub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* -------------------------------------------------------------------
+   10. KARTU TAUT (Fun Facts)
+   ------------------------------------------------------------------- */
+.link-card {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+}
+.link-card:hover { background: var(--surface-hover); box-shadow: var(--shadow-md); }
+.link-card:active { transform: scale(0.99); }
+.link-card > .icon:first-child { color: var(--gold); }
+
+.link-card-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.link-card-title { font-weight: 700; font-size: 0.98rem; }
+.link-card-sub { font-size: 0.82rem; color: var(--text-muted); }
+
+/* -------------------------------------------------------------------
+   11. KARTU INSTALL APP
+   ------------------------------------------------------------------- */
+.install-card {
+  position: relative;
+  padding: 0;
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  overflow: hidden;
+}
+
+.install-action {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+  text-align: left;
+  padding: var(--sp-5) var(--sp-6);
+}
+.install-action:active { transform: scale(0.99); }
+
+.install-icon { color: var(--gold); }
+
+.install-text { display: flex; flex-direction: column; gap: 2px; }
+.install-title { font-weight: 700; font-size: 0.98rem; }
+.install-sub { font-size: 0.82rem; color: var(--text-muted); }
+
+.install-dismiss {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  z-index: 1;
+}
+.install-dismiss:hover { background: rgba(0, 0, 0, 0.06); }
+.install-dismiss .icon { width: 16px; height: 16px; }
+
+/* -------------------------------------------------------------------
+   12. JUDUL SEKSI (non-beranda)
+   ------------------------------------------------------------------- */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+  margin: var(--sp-2) 0 var(--sp-1);
+}
+
+.schedule-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+}
+.schedule-title-row .section-title { margin: var(--sp-2) 0 var(--sp-1); }
+
+/* -------------------------------------------------------------------
+   13. GRID ROMBEL
+   ------------------------------------------------------------------- */
+.rombel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+}
+
+.rombel-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  transition: all var(--dur-fast) var(--ease);
+}
+.rombel-btn:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.rombel-btn:active { transform: translateY(0) scale(0.97); }
+
+/* -------------------------------------------------------------------
+   14. GRID HARI
+   ------------------------------------------------------------------- */
+.day-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-3);
+}
+
+.day-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  width: 100%;
+  text-align: left;
+  padding: var(--sp-4) var(--sp-5);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--dur-fast) var(--ease);
+}
+.day-btn:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.day-btn:active { transform: translateY(0) scale(0.99); }
+
+.day-btn.is-today {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.day-date-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--bg-muted);
+  font-weight: 700;
+  line-height: 1.1;
+}
+.day-btn.is-today .day-date-badge {
+  background: var(--gold-text);
+  color: var(--accent-contrast);
+}
+.day-date-badge .dnum { font-size: 1.05rem; }
+.day-date-badge .dmon { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.04em; opacity: 0.8; }
+
+.day-info { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.day-name { font-weight: 700; font-size: 1rem; }
+.day-today-tag {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--gold-text);
+}
+
+/* -------------------------------------------------------------------
+   14b. IKON SERAGAM HARIAN (Senin–Jumat)
+   Ditampilkan di sisi kanan setiap baris hari, dan di header jadwal.
+   ------------------------------------------------------------------- */
+.day-uniform-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 46px;
+  margin-left: var(--sp-2);
+}
+.day-uniform-icon svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+.schedule-title-row .day-uniform-icon {
+  width: 34px;
+  height: 39px;
+}
+
+/* Linework luar seragam — warna tetap agar kontras di atas semua warna isian */
+.uniform-outline {
+  fill: none;
+  stroke: #2b2f3d;
+  stroke-width: 2.6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+/* Gantungan baju — mengikuti warna teks sekunder supaya menyesuaikan tema */
+.uniform-hanger {
+  fill: none;
+  stroke: var(--text-muted);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Senin & Selasa — seragam nasional: putih & abu-abu */
+.uniform-shirt-putih { fill: #fbfbfd; }
+.uniform-pants-abu { fill: #9aa1ad; }
+
+/* Rabu — seragam identitas jurusan: gradasi warna berjalan pelan-pelan */
+.uniform-pants-netral { fill: #575f6e; }
+.uniform-shirt-gradient {
+  fill: url(#uniformRabuGradient);
+  animation: uniformHueShift 10s linear infinite;
+}
+@keyframes uniformHueShift {
+  from { filter: hue-rotate(0deg); }
+  to   { filter: hue-rotate(360deg); }
+}
+
+/* Kamis — batik sekolah: putih + biru pastel + biru */
+.uniform-pants-gelap { fill: #2c2f38; }
+
+/* Jumat — olahraga: biru tua & biru pastel */
+.uniform-shirt-navy { fill: #1e3a75; }
+.uniform-pants-pastel { fill: #aecbef; }
+
+/* -------------------------------------------------------------------
+   15. KARTU JADWAL
+   ------------------------------------------------------------------- */
+.schedule-card { padding: 0; overflow: hidden; }
+
+.schedule-header {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.schedule-list { display: flex; flex-direction: column; }
+
+.schedule-item {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: var(--sp-3);
+  align-items: center;
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--border);
+}
+.schedule-item:last-child { border-bottom: none; }
+
+.schedule-item.is-now {
+  background: var(--accent-soft);
+}
+
+.time-slot {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.subject-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.subject-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  background: var(--subject-color, var(--text-muted));
+}
+
+.subject-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.now-tag {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+}
+
+/* -------------------------------------------------------------------
+   16. FUN FACTS
+   ------------------------------------------------------------------- */
+.facts-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-4);
+}
+
+.fact-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--border);
+}
+.fact-card-head .icon { color: var(--accent); width: 22px; height: 22px; }
+.fact-card-head h3 { font-size: 1.05rem; font-weight: 700; }
+
+.fact-list { display: flex; flex-direction: column; }
+.fact-item {
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.92rem;
+  color: var(--text);
+  line-height: 1.55;
+}
+.fact-item:last-child { border-bottom: none; }
+
+/* Baris berpola "label : nilai" — tampil sebagai dua kolom yang rapi
+   (label di kiri, nilai di kanan), alih-alih satu kalimat panjang. */
+.fact-item--pair {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+.fact-item-label {
+  font-weight: 600;
+  color: var(--text);
+  flex: 0 1 50%;
+}
+.fact-item-value {
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: right;
+  flex: 1 1 50%;
+}
+
+/* Baris tanpa pola label/nilai (kalimat biasa) tetap sebagai teks penuh */
+.fact-item--plain {
+  color: var(--text);
+}
+
+/* -------------------------------------------------------------------
+   17. MODAL (Tutorial iOS / fallback)
+   ------------------------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(10, 12, 20, 0.5);
+  padding: var(--sp-4);
+  padding-bottom: calc(var(--sp-4) + var(--safe-bottom));
+}
+.modal-overlay[hidden] { display: none; }
+
+@media (min-width: 560px) {
+  .modal-overlay { align-items: center; }
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: var(--sp-7) var(--sp-6) var(--sp-6);
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+}
+.modal-close:hover { background: var(--surface-hover); }
+
+.modal h2 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: var(--sp-5);
+}
+
+.ios-steps { display: flex; flex-direction: column; gap: var(--sp-4); }
+.ios-steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  font-size: 0.92rem;
+}
+.step-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.step-icon .icon { width: 18px; height: 18px; }
+
+.modal-body-text { font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; }
+
+.ios-browser-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  margin-bottom: var(--sp-5);
+  border-radius: var(--radius-sm);
+  background: var(--gold-soft);
+  color: var(--gold-text);
+}
+.ios-browser-notice .icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--gold);
+}
+.ios-browser-notice p {
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--gold-text);
+}
+
+/* -------------------------------------------------------------------
+   18. PESAN KOSONG
+   ------------------------------------------------------------------- */
+.no-data {
+  text-align: center;
+  padding: var(--sp-8) var(--sp-4);
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  grid-column: 1 / -1;
+}
+
+/* -------------------------------------------------------------------
+   19. RESPONSIF
+   ------------------------------------------------------------------- */
+@media (min-width: 480px) {
+  .rombel-grid { grid-template-columns: repeat(4, 1fr); }
+  .day-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 720px) {
+  .rombel-grid { grid-template-columns: repeat(5, 1fr); }
+  .facts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* -------------------------------------------------------------------
+   20. AKSESIBILITAS
+   ------------------------------------------------------------------- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* -------------------------------------------------------------------
+   21. CETAK
+   ------------------------------------------------------------------- */
+@media print {
+  .appbar, .breadcrumb, .continue-card, .selector-card, .link-card, .install-card {
+    display: none !important;
+  }
+  .schedule-card { box-shadow: none; border: 1px solid #ccc; }
+}
