@@ -194,3 +194,19 @@ tetap dipertahankan pada versi SMK ini:
   khas SMK (Sejarah, Seni Budaya, Informatika, Kewirausahaan), dan
   warna aksen sekolah untuk seluruh mapel produktif/konsentrasi jurusan
   agar mudah dikenali di jadwal.
+- **Fun Facts (halaman "Fun Facts Sekolah"):** tiap kartu kini punya
+  ilustrasi dua-warna orisinal sendiri (bukan satu ikon garis yang
+  diulang), dengan warna aksen berbeda per kartu memakai token warna
+  yang sudah ada (`--subj-*`, `--gold`, `--accent`) supaya otomatis
+  pas di tema terang/gelap. Baris berisi angka ringkas (mis. jumlah
+  guru per jurusan) ditampilkan sebagai kotak angka besar yang
+  "menghitung naik" saat digulir ke dalam layar; baris berisi kalimat,
+  nama, atau daftar panjang ditampilkan mengalir sebagai satu baris
+  teks (label ditebalkan sebagai awalan), bukan dipaksa dua kolom
+  sejajar seperti sebelumnya — perubahan ini yang memperbaiki tampilan
+  yang tadinya terasa bertumpuk/berdempetan saat labelnya panjang.
+  Logika ada di `classifyFactRow()`, `FACT_ILLUSTRATIONS`, dan
+  `renderFunFacts()` di `js/app.js`. Karena `css/style.css`,
+  `css/animations.css`, dan `js/app.js` berubah, `CACHE_VERSION` di
+  `sw.js` sudah dinaikkan — kalau mengedit file-file itu lagi, naikkan
+  lagi versinya (lihat komentar di `sw.js`).
