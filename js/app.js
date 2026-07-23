@@ -246,12 +246,12 @@ const PANTS_SHORT_CONTENT = `<g transform="translate(-231.881 -380.032)">
   </g>`;
 
 function pantsViewport(content, viewBox, height) {
-  return `<svg x="14" y="49" width="36" height="${height}" viewBox="${viewBox}" preserveAspectRatio="xMidYMid meet" overflow="visible">${content}</svg>`;
+  return `<svg x="14" y="46" width="36" height="${height}" viewBox="${viewBox}" preserveAspectRatio="xMidYMid meet" overflow="visible">${content}</svg>`;
 }
 
 const PANTS_LOOKS = {
-  panjang: () => pantsViewport(PANTS_LONG_CONTENT, '0 0 212.314 212.314', 25),
-  pendek: () => pantsViewport(PANTS_SHORT_CONTENT, '0 -2.42 41.222 41.222', 16.5),
+  panjang: () => pantsViewport(PANTS_LONG_CONTENT, '0 0 212.314 212.314', 29),
+  pendek: () => pantsViewport(PANTS_SHORT_CONTENT, '0 -2.42 41.222 41.222', 19),
 };
 
 /* Bagian yang dianimasikan blok hitam (bahu & perut, ±30% baju) pada
@@ -260,7 +260,7 @@ const OLAHRAGA_BLOCK_SHOULDER = { x: 66, y: 50, w: 380, h: 78 };
 const OLAHRAGA_BLOCK_BELLY = { x: 66, y: 298, w: 380, h: 96 };
 
 function shirtViewport(bodyContent, viewBoxSize) {
-  return `<svg x="8" y="0" width="48" height="48" viewBox="0 0 ${viewBoxSize} ${viewBoxSize}" overflow="visible">${bodyContent}</svg>`;
+  return `<svg x="8" y="-3" width="48" height="48" viewBox="0 0 ${viewBoxSize} ${viewBoxSize}" overflow="visible">${bodyContent}</svg>`;
 }
 
 const UNIFORM_LOOKS = {
