@@ -787,15 +787,15 @@ img {
    ------------------------------------------------------------------- */
 .day-uniform-icon {
   flex-shrink: 0;
-  width: 40px;
-  height: 46px;
+  width: 46px;
+  height: 53px;
   margin-left: var(--sp-2);
 }
 .day-uniform-icon svg { width: 100%; height: 100%; display: block; overflow: visible; }
 
 .schedule-title-row .day-uniform-icon {
-  width: 34px;
-  height: 39px;
+  width: 38px;
+  height: 44px;
 }
 
 /* Setiap "tampilan" (baju + celana) ditumpuk lewat <g class="uniform-look">;
@@ -826,20 +826,38 @@ img {
    aksen yang lebih gelap/kontras dari warna dasar baju masing-masing. */
 .uniform-shirt-accent { stroke: none; }
 
+/* Semua garis siluet (baju & celana) memakai non-scaling-stroke supaya
+   ketebalan garis tetap konsisten & mudah dibaca walau ikonnya kecil,
+   alih-alih ikut menyusut mengikuti viewBox internal tiap aset (dulu
+   garisnya jadi jauh lebih tipis dari 10 unit aslinya setelah diperkecil
+   ke ukuran ikon, sehingga terlihat tipis/nyaris hilang). Untuk celana,
+   garis luar HANYA disasarkan ke path siluet utama (.uniform-pants-body)
+   supaya detail jahitan kecil di dalamnya tidak ikut diberi garis. */
+.uniform-shirt-fill,
+.uniform-shirt-outline,
+.uniform-pants-body {
+  vector-effect: non-scaling-stroke;
+}
+
 /* Senin & Selasa — seragam nasional: putih & abu-abu, celana panjang */
 .uniform-shirt-putih .uniform-shirt-fill {
   fill: #eef0f5;
   stroke: var(--text);
-  stroke-width: 10;
+  stroke-width: 1.7;
 }
 .uniform-pants-abu { fill: #9aa1ad; }
+.uniform-pants-abu .uniform-pants-body {
+  stroke: var(--text);
+  stroke-width: 1.3;
+  stroke-opacity: 0.4;
+}
 
 /* Rabu — identitas jurusan: gradasi pastel lembut, tetap berjalan pelan
    (animasi sama seperti sebelumnya, hanya warnanya yang dilembutkan) */
 .uniform-shirt-pastel-anim .uniform-shirt-fill {
   fill: url(#uniformRabuGradient);
   stroke: var(--text);
-  stroke-width: 10;
+  stroke-width: 1.7;
   animation: uniformHueShift 10s linear infinite;
 }
 @keyframes uniformHueShift {
@@ -847,13 +865,18 @@ img {
   to   { filter: hue-rotate(360deg); }
 }
 .uniform-pants-netral { fill: #838a9a; }
+.uniform-pants-netral .uniform-pants-body {
+  stroke: var(--text);
+  stroke-width: 1.3;
+  stroke-opacity: 0.4;
+}
 
 /* Kamis — batik sekolah: dasar putih + motif biru & biru pastel, celana
    abu-abu senada Senin/Selasa */
 .uniform-shirt-batik .uniform-shirt-outline {
   fill: none;
   stroke: #2f63c2;
-  stroke-width: 10;
+  stroke-width: 1.9;
 }
 .uniform-shirt-batik .uniform-shirt-accent { fill: #2f63c2; }
 
@@ -862,10 +885,15 @@ img {
 .uniform-shirt-pramuka .uniform-shirt-fill {
   fill: #caa06d;
   stroke: #7a5330;
-  stroke-width: 10;
+  stroke-width: 1.7;
 }
 .uniform-shirt-pramuka .uniform-shirt-accent { fill: #8a6239; }
 .uniform-pants-coklat-tua { fill: #5c3d22; }
+.uniform-pants-coklat-tua .uniform-pants-body {
+  stroke: var(--text);
+  stroke-width: 1.3;
+  stroke-opacity: 0.3;
+}
 
 /* Jumat, tampilan 2 — Olahraga: gradasi biru agak tua ke biru pastel,
    dengan blok hitam di bahu & perut (±30% dari luas baju), celana
@@ -873,10 +901,32 @@ img {
 .uniform-shirt-olahraga .uniform-shirt-outline {
   fill: none;
   stroke: #1c2f4d;
-  stroke-width: 10;
+  stroke-width: 1.9;
 }
 .uniform-olahraga-block { fill: #15181d; }
 .uniform-pants-hitam { fill: #15181d; }
+.uniform-pants-hitam .uniform-pants-body {
+  stroke: var(--text);
+  stroke-width: 1.4;
+  stroke-opacity: 0.55;
+}
+
+/* Tema gelap: garis luar olahraga (biru dongker) & celana hitam nyaris
+   melebur dengan latar gelap bila memakai warna versi tema terang apa
+   adanya, jadi keduanya diberi kontras tambahan khusus di tema gelap
+   supaya siluetnya tetap jelas kelihatan. */
+:root[data-theme='dark'] .uniform-shirt-olahraga .uniform-shirt-outline {
+  stroke: #7c9cd6;
+}
+:root[data-theme='dark'] .uniform-shirt-pramuka .uniform-shirt-fill {
+  stroke: #b98957;
+}
+:root[data-theme='dark'] .uniform-pants-hitam {
+  fill: #262b34;
+}
+:root[data-theme='dark'] .uniform-pants-hitam .uniform-pants-body {
+  stroke-opacity: 0.6;
+}
 
 /* -------------------------------------------------------------------
    15. KARTU JADWAL
