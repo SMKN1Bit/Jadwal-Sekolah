@@ -218,11 +218,41 @@ const SHIRT_OLAHRAGA_LOGO = `M366.938,127.999c-13.943,0-26.342,6.724-34.133,17.0
 				c-4.71,0-8.533,3.814-8.533,8.533s3.823,8.533,8.533,8.533c14.114,0,25.6,11.486,25.6,25.6c0,4.719,3.823,8.533,8.533,8.533
 				s8.533-3.814,8.533-8.533c0-14.114,11.486-25.6,25.6-25.6c4.71,0,8.533-3.814,8.533-8.533S371.648,127.999,366.938,127.999z`;
 
-/* Celana generik (bentuk sederhana, bukan dari aset — aset yang dikirim
-   hanya berupa baju) supaya siluet atasan+bawahan tetap terlihat sebagai
-   satu setelan pada badge kecil. */
-const PANTS_LONG_PATH = 'M14,49 L50,49 L50,74 L37.5,74 L37.5,58 L26.5,58 L26.5,74 L14,74 Z';
-const PANTS_SHORT_PATH = 'M14,49 L50,49 L50,65.5 L37.5,65.5 L37.5,58 L26.5,58 L26.5,65.5 L14,65.5 Z';
+/* Ilustrasi celana asli (dari aset SVG yang dikirim), sama seperti baju:
+   diwarnai lewat CSS class supaya satu bentuk bisa dipakai ulang dengan
+   warna berbeda. "panjang" dipakai Senin/Selasa/Rabu/Kamis & tampilan
+   Pramuka Jumat; "pendek" khusus tampilan Olahraga Jumat. Fill bawaan
+   aset sengaja tidak disertakan (dihapus dari markup asli) supaya warna
+   sepenuhnya diatur oleh class uniform-pants-* di CSS. */
+const PANTS_LONG_CONTENT = `<path d="M168.067,212.314h-55.475c-1.657,0-3-1.343-3-3V79.929l-7.87-0.021v129.406c0,1.657-1.343,3-3,3H44.248
+	c-1.657,0-3-1.343-3-3V23.089c0-4.119,2.104-7.757,5.292-9.895V3c0-1.657,1.343-3,3-3h114.495c1.657,0,3,1.343,3,3v11.166
+	c2.471,2.183,4.032,5.375,4.032,8.923v186.225C171.067,210.971,169.724,212.314,168.067,212.314z M115.592,206.314h49.475V49.476
+	h-1.653c-13.993,0-25.377-11.384-25.377-25.377v-6.915h-16.729v35.048c0,4.586-2.548,8.71-6.65,10.762l-5.499,2.75v8.185
+	l3.442,0.009c1.653,0.004,2.992,1.346,2.992,3V206.314z M47.248,206.314h48.475V76.9c0-0.797,0.317-1.561,0.882-2.124
+	c0.563-0.561,1.324-0.876,2.118-0.876c0.003,0,0.005,0,0.008,0l4.428,0.012V17.184h-28.88v6.915
+	c0,13.993-11.384,25.377-25.377,25.377h-1.653V206.314z M109.158,17.184v41.851l2.815-1.408c2.057-1.029,3.334-3.096,3.334-5.396
+	V17.184H109.158z M144.037,17.184v6.915c0,10.685,8.692,19.377,19.377,19.377h1.653V23.089c0-3.256-2.649-5.905-5.905-5.905H144.037
+	z M47.248,43.476h1.653c10.685,0,19.377-8.692,19.377-19.377v-6.915H53.153c-3.256,0-5.905,2.649-5.905,5.905V43.476z
+	 M141.037,11.184h19.998V6H52.54v5.184H141.037z"></path>`;
+
+const PANTS_SHORT_CONTENT = `<g transform="translate(-231.881 -380.032)">
+    <path d="M264.288,416.417c-8.466,0-8.767-.3-9.085-.622-.224-.227-.547-.555-2.976-11.934-1.088,5.862-2.1,11.283-2.181,11.531-.26.817-.307.963-9.544.963-8.078,0-8.166-.17-8.494-.807-.57-1.1.886-30.11,2.114-33.7a1.73,1.73,0,0,1,.828-1.1c1.12-.519,4.633-.721,12.529-.721l4.96.009,5.063-.009c9.716,0,11.962.285,12.708.811.551.388,1.072.756,2.087,17.585.36,5.973.88,16.34.8,16.829C272.934,416.194,272.9,416.417,264.288,416.417Zm-7.635-2.2c1.05.1,3.879.2,7.635.2,3.294,0,5.694-.072,6.811-.157-.141-4.819-1.385-28.7-2.217-31.838-1.019-.249-4.858-.39-11.38-.39l-5.063.009-4.96-.009c-6.486,0-10.339.155-11.473.461-1.115,2.9-2.217,26.764-2.151,31.734,1.076.071,3.388.128,6.647.128,3.69,0,6.569-.07,7.753-.149.431-2.229,1.912-10.192,2.926-15.675a1,1,0,0,1,.972-.818h.011a1,1,0,0,1,.98.8C254.244,403.788,256.061,412.193,256.653,414.222Z"></path>
+    <path d="M234.079,392.389l-.036-1c3.5-.127,5.559-7.1,6.058-9.77l.983.184C241,382.227,239.085,392.206,234.079,392.389Z"></path>
+    <path d="M270.925,392.389c-5.006-.183-6.924-10.162-7-10.586l.983-.184c.018.1,1.847,9.616,6.057,9.77Z"></path>
+    <rect width="1" height="17.75" transform="translate(251.332 380.965) rotate(-0.738)"></rect>
+    <path d="M254.834,384.4a.806.806,0,0,1-.807.8h0a.8.8,0,0,1-.8-.8h0a.8.8,0,0,1,.8-.8h0a.805.805,0,0,1,.807.8Z"></path>
+    <rect width="16.696" height="1" transform="translate(232.873 411.158)"></rect>
+    <rect width="16.695" height="1" transform="translate(254.835 411.158)"></rect>
+  </g>`;
+
+function pantsViewport(content, viewBox, height) {
+  return `<svg x="14" y="49" width="36" height="${height}" viewBox="${viewBox}" preserveAspectRatio="xMidYMid meet" overflow="visible">${content}</svg>`;
+}
+
+const PANTS_LOOKS = {
+  panjang: () => pantsViewport(PANTS_LONG_CONTENT, '0 0 212.314 212.314', 25),
+  pendek: () => pantsViewport(PANTS_SHORT_CONTENT, '0 -2.42 41.222 41.222', 16.5),
+};
 
 /* Bagian yang dianimasikan blok hitam (bahu & perut, ±30% baju) pada
    baju olahraga — posisi dikira-kira dari proporsi siluet aslinya. */
@@ -272,14 +302,14 @@ const UNIFORM_LOOKS = {
 /* Satu "tampilan" = baju + celana yg sepadan, dipakai langsung (Senin,
    Selasa, Rabu, Kamis) atau silih berganti berpasangan (Jumat). */
 const UNIFORM_CONFIG = {
-  SENIN: { looks: [{ shirt: 'putih', shirtClass: 'uniform-shirt-putih', pants: PANTS_LONG_PATH, pantsClass: 'uniform-pants-abu' }] },
-  SELASA: { looks: [{ shirt: 'putih', shirtClass: 'uniform-shirt-putih', pants: PANTS_LONG_PATH, pantsClass: 'uniform-pants-abu' }] },
-  RABU: { looks: [{ shirt: 'pastel', shirtClass: 'uniform-shirt-pastel-anim', pants: PANTS_LONG_PATH, pantsClass: 'uniform-pants-netral' }] },
-  KAMIS: { looks: [{ shirt: 'batik', shirtClass: 'uniform-shirt-batik', pants: PANTS_LONG_PATH, pantsClass: 'uniform-pants-abu' }] },
+  SENIN: { looks: [{ shirt: 'putih', shirtClass: 'uniform-shirt-putih', pantsType: 'panjang', pantsClass: 'uniform-pants-abu' }] },
+  SELASA: { looks: [{ shirt: 'putih', shirtClass: 'uniform-shirt-putih', pantsType: 'panjang', pantsClass: 'uniform-pants-abu' }] },
+  RABU: { looks: [{ shirt: 'pastel', shirtClass: 'uniform-shirt-pastel-anim', pantsType: 'panjang', pantsClass: 'uniform-pants-netral' }] },
+  KAMIS: { looks: [{ shirt: 'batik', shirtClass: 'uniform-shirt-batik', pantsType: 'panjang', pantsClass: 'uniform-pants-abu' }] },
   JUMAT: {
     looks: [
-      { shirt: 'pramuka', shirtClass: 'uniform-shirt-pramuka', pants: PANTS_LONG_PATH, pantsClass: 'uniform-pants-coklat-tua', fadeClass: 'uniform-look-a' },
-      { shirt: 'olahraga', shirtClass: 'uniform-shirt-olahraga', pants: PANTS_SHORT_PATH, pantsClass: 'uniform-pants-hitam', fadeClass: 'uniform-look-b' },
+      { shirt: 'pramuka', shirtClass: 'uniform-shirt-pramuka', pantsType: 'panjang', pantsClass: 'uniform-pants-coklat-tua', fadeClass: 'uniform-look-a' },
+      { shirt: 'olahraga', shirtClass: 'uniform-shirt-olahraga', pantsType: 'pendek', pantsClass: 'uniform-pants-hitam', fadeClass: 'uniform-look-b' },
     ],
   },
 };
@@ -289,9 +319,10 @@ function uniformIconSVG(dayKey) {
   if (!cfg) return '';
   const looksMarkup = cfg.looks.map((look) => {
     const shirtSVG = UNIFORM_LOOKS[look.shirt]();
+    const pantsSVG = PANTS_LOOKS[look.pantsType]();
     return `<g class="uniform-look ${look.fadeClass || ''}">
       <g class="uniform-shirt ${look.shirtClass}">${shirtSVG}</g>
-      <path class="uniform-pants ${look.pantsClass}" d="${look.pants}"></path>
+      <g class="uniform-pants ${look.pantsClass}">${pantsSVG}</g>
     </g>`;
   }).join('');
   return `<svg viewBox="0 0 64 76" role="img" aria-label="Seragam hari ${DAY_LABELS[dayKey] || ''}">${looksMarkup}</svg>`;
