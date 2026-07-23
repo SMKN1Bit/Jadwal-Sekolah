@@ -5,7 +5,7 @@
  * isi file di bawah ini berubah agar pengguna menerima versi baru.
  */
 
-const CACHE_VERSION = 'jadwal-smkn1-v3';
+const CACHE_VERSION = 'jadwal-smkn1-v4';
 
 const APP_SHELL = [
   './',
