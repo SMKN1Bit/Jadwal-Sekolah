@@ -47,10 +47,13 @@ testing).
   produktif jurusan lain adalah rekonstruksi terbaik dari singkatannya.
   Silakan koreksi bila ada nama yang kurang tepat.
 - Dokumen sumber juga tidak mencantumkan jam dinding, hanya "jam ke-1,
-  ke-2, dst". Waktu yang ditampilkan memakai estimasi standar (1 JP =
-  45 menit, mengikuti pola Upacara/Ibadah/Istirahat/OR-Kerja Bakti apa
-  adanya dari dokumen) — sesuaikan `js/data.js` bila sekolah punya jam
-  bel resmi yang berbeda.
+  ke-2, dst". Waktu yang ditampilkan dihitung otomatis dari jam masuk +
+  durasi tiap jenis kegiatan yang diatur di `js/data/time.js` (1 JP = 45
+  menit, Istirahat 30 menit, Ibadah Pagi 20 menit, dst, mengikuti pola
+  Upacara/Ibadah/Istirahat/OR-Kerja Bakti apa adanya dari dokumen) —
+  sesuaikan angkanya di `js/data/time.js` bila sekolah punya jam bel
+  resmi yang berbeda; jadwal di `js/data/schedule.js` sendiri tidak
+  menyimpan jam sama sekali, jadi tidak perlu diubah.
 
 **Ikon seragam harian (baru)**
 - Setiap baris hari di layar "Pilih Hari", serta di judul layar Jadwal,
@@ -65,7 +68,7 @@ testing).
     karena dokumen jadwal menunjukkan slot "OR/Kerja Bakti" tiap Jumat
     pagi di semua rombel. Bila yang dipakai sekolah ternyata seragam
     **pramuka** (coklat), tinggal ganti konfigurasi hari Jumat di
-    `UNIFORM_CONFIG` (`js/app.js`).
+    `UNIFORM_CONFIG` (`js/uniform.js`).
   - Selasa tidak disebutkan eksplisit oleh pemberi tugas — didefault
     sama seperti Senin (seragam nasional), asumsi paling umum dipakai
     sekolah Indonesia.
@@ -149,21 +152,76 @@ testing).
 - Sudah diuji lewat emulasi user-agent Safari, Chrome-iOS, dan
   in-app browser Instagram — ketiganya berperilaku benar.
 
+## Cara mengubah data (tanpa perlu paham semua kode)
+
+Semua yang biasanya perlu diedit rutin ada di 6 file kecil dalam folder
+`js/data/` dan `js/uniform.js`. **`js/app.js` sendiri tidak perlu disentuh**
+untuk mengubah data — isinya murni logika tampilan.
+
+| Mau ubah apa? | Buka file ini |
+|---|---|
+| Nama mata pelajaran yang salah/kepanjangan/disingkat | `js/data/subjects.js` |
+| Warna mata pelajaran di jadwal | `js/data/subjects.js` |
+| Jam masuk, atau durasi 1 JP/istirahat/upacara/ibadah | `js/data/time.js` |
+| Urutan mapel di suatu rombel/hari (tanpa urus jamnya) | `js/data/schedule.js` |
+| Daftar jurusan, singkatan jurusan, atau rombel per kelas | `js/data/majors.js` |
+| Isi halaman "Fun Facts Sekolah" (termasuk jumlah guru) | `js/data/funfacts.js` |
+| Seragam harian (Senin–Jumat) | `js/uniform.js` |
+
+**Contoh paling umum — membetulkan nama mata pelajaran:**
+Jadwal di `schedule.js` tidak menyimpan nama mapel secara berulang-ulang,
+hanya kode singkat (mis. `"DASAR_TJKT"`). Kalau nama lengkapnya ternyata
+salah, cukup buka `js/data/subjects.js`, cari kodenya, lalu ganti bagian
+`name` di baris itu SATU KALI — seluruh jadwal yang memakai kode itu ikut
+berubah otomatis. Tidak perlu cari-ganti manual di ratusan baris jadwal.
+
+**Contoh lain — membetulkan durasi jam pelajaran/istirahat/upacara:**
+`schedule.js` juga TIDAK menyimpan jam sama sekali — cuma urutan kode
+mapel per hari (mis. `["UPACARA", "PJOK", "PJOK", ...]`). Jamnya dihitung
+otomatis oleh `js/data/time.js` dari jam masuk pertama + durasi tiap jenis
+kegiatan, dijumlahkan berurutan. Jadi kalau durasinya salah:
+- 1 jam pelajaran biasa harusnya 43 menit, bukan 45 → ubah
+  `DURASI_MAPEL_DEFAULT` di `js/data/time.js` jadi `43`.
+- Istirahat harusnya 40 menit, bukan 30 → ubah `DURASI_KHUSUS.ISTIRAHAT`
+  jadi `40`.
+- Upacara harusnya 50 menit, bukan 45 → ubah `DURASI_KHUSUS.UPACARA`
+  jadi `50`.
+
+Cukup ubah angkanya SATU KALI di `time.js` — jam di SEMUA rombel & SEMUA
+hari yang punya slot itu langsung ikut menyesuaikan, tidak perlu hitung
+ulang satu-satu di `schedule.js`.
+
+**Contoh lain — memperbarui jumlah guru di Fun Facts:**
+Buka `js/data/funfacts.js`, cari komentar `// Fakta jumlah guru` — itu
+menandai baris teks yang berisi angka jumlah guru (total sekolah, per
+jurusan, maupun per mata pelajaran umum). Tinggal edit angkanya langsung.
+
+Setelah mengedit file apa pun di atas, kalau situs sudah pernah dibuka
+sebelumnya (ter-cache oleh service worker untuk mode offline), naikkan
+`CACHE_VERSION` di `sw.js` supaya perubahan langsung terlihat — lihat
+komentar di file tersebut.
+
 ## Struktur file
 
 ```
 jadwal-sekolah-pwa/
 ├─ index.html
 ├─ manifest.json
-├─ sw.js                  ← service worker (cache offline)
-├─ assets/logo.svg        ← logo sementara (lihat catatan di atas)
+├─ sw.js                     ← service worker (cache offline)
+├─ assets/logo.svg           ← logo sementara (lihat catatan di atas)
 ├─ css/
-│  ├─ style.css           ← semua desain, token warna, layout
-│  └─ animations.css      ← animasi yang disengaja & secukupnya
+│  ├─ style.css              ← semua desain, token warna, layout
+│  └─ animations.css         ← animasi yang disengaja & secukupnya
 ├─ js/
-│  ├─ data.js             ← data jurusan, jadwal & fun facts
-│  └─ app.js              ← seluruh logika aplikasi + ikon seragam
-└─ icons/                 ← ikon PWA hasil generate dari logo.svg
+│  ├─ data/
+│  │  ├─ subjects.js         ← nama & warna tiap mata pelajaran
+│  │  ├─ time.js             ← jam masuk & durasi tiap jenis kegiatan
+│  │  ├─ majors.js           ← daftar jurusan & rombel per kelas
+│  │  ├─ schedule.js         ← urutan mapel per kelas/jurusan/rombel/hari
+│  │  └─ funfacts.js         ← isi & ilustrasi halaman Fun Facts
+│  ├─ uniform.js             ← konfigurasi & gambar seragam harian
+│  └─ app.js                 ← seluruh logika aplikasi (tanpa data)
+└─ icons/                    ← ikon PWA hasil generate dari logo.svg
 ```
 
 ## Warisan dari versi SMP Negeri 2 Bitung
@@ -204,8 +262,9 @@ tetap dipertahankan pada versi SMK ini:
   teks (label ditebalkan sebagai awalan), bukan dipaksa dua kolom
   sejajar seperti sebelumnya — perubahan ini yang memperbaiki tampilan
   yang tadinya terasa bertumpuk/berdempetan saat labelnya panjang.
-  Logika ada di `classifyFactRow()`, `FACT_ILLUSTRATIONS`, dan
-  `renderFunFacts()` di `js/app.js`. Karena `css/style.css`,
-  `css/animations.css`, dan `js/app.js` berubah, `CACHE_VERSION` di
-  `sw.js` sudah dinaikkan — kalau mengedit file-file itu lagi, naikkan
-  lagi versinya (lihat komentar di `sw.js`).
+  Konten & ilustrasi tiap kartu ada di `js/data/funfacts.js`
+  (`FACT_ICONS`, `funFactsData`); logika parsing & render ada di
+  `classifyFactRow()` dan `renderFunFacts()` di `js/app.js`. Karena
+  `css/style.css`, `css/animations.css`, dan `js/app.js` berubah,
+  `CACHE_VERSION` di `sw.js` sudah dinaikkan — kalau mengedit file-file
+  itu lagi, naikkan lagi versinya (lihat komentar di `sw.js`).

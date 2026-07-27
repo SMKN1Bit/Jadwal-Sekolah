@@ -5,7 +5,7 @@
  * isi file di bawah ini berubah agar pengguna menerima versi baru.
  */
 
-const CACHE_VERSION = 'jadwal-smkn1-v4';
+const CACHE_VERSION = 'jadwal-smkn1-v6';
 
 const APP_SHELL = [
   './',
@@ -13,7 +13,12 @@ const APP_SHELL = [
   './manifest.json',
   './css/style.css',
   './css/animations.css',
-  './js/data.js',
+  './js/data/subjects.js',
+  './js/data/time.js',
+  './js/data/majors.js',
+  './js/data/schedule.js',
+  './js/data/funfacts.js',
+  './js/uniform.js',
   './js/app.js',
   './assets/logo.svg',
   './icons/icon-192.png',
