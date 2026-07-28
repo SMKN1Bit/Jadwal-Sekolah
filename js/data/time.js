@@ -32,22 +32,21 @@
 // beda sendiri (mis. Senin lebih pagi karena upacara), cukup ubah baris
 // hari itu saja — hari lain tidak ikut berubah.
 //
-// Update Semester Ganjil 2026/2027 (Pembagian Jam Mengajar): SENIN, SELASA,
-// dan JUMAT masing-masing dibuka dengan kegiatan 60 menit pukul 06.30-07.30
-// (Upacara Bendera / Ibadah Pagi / Senam-Kerja Bakti — lihat DURASI_KHUSUS
-// & schedule.js), jadi jam ke-1 di ketiga hari itu baru mulai 07.30. RABU
-// dan KAMIS TIDAK punya kegiatan pembuka, langsung jam ke-1 pukul 07.15.
-// (Sumber tertulis "Senin, Selasa & Kamis" vs "Rabu dan Jumat" di dokumen
-// PEMBAGIAN JAM MENGAJAR dan "Senin & Kamis" vs "Selasa, Rabu dan Jumat" di
-// sheet JAMPEL saling bertentangan satu sama lain; pengelompokan di bawah
-// ini mengikuti jadwal per-kelas yang sebenarnya, yang secara konsisten
-// menunjukkan SENIN=Upacara, SELASA=Ibadah Pagi, JUMAT=Senam/Kerja Bakti
-// sebagai kegiatan pembuka, dan RABU/KAMIS tanpa kegiatan pembuka.)
+// Update Semester Ganjil 2026/2027 (Pembagian Jam Mengajar, dikonfirmasi
+// user): SENIN, KAMIS, dan JUMAT masing-masing dibuka dengan kegiatan 60
+// menit pukul 06.30-07.30 (Upacara Bendera / Ibadah Pagi / Senam-Kerja
+// Bakti — lihat DURASI_KHUSUS & schedule.js), jadi jam ke-1 di ketiga hari
+// itu baru mulai 07.30. SELASA dan RABU TIDAK punya kegiatan pembuka,
+// langsung jam ke-1 pukul 07.15.
+// (Catatan riwayat: dokumen PEMBAGIAN JAM MENGAJAR & sheet JAMPEL yang
+// dikirim sempat saling bertentangan soal hari mana yang punya kegiatan
+// pembuka. Pengelompokan di atas — Ibadah Pagi di KAMIS, bukan Selasa —
+// sudah dikonfirmasi langsung oleh pihak sekolah.)
 const JAM_MASUK = {
     SENIN: "06.30",
-    SELASA: "06.30",
+    SELASA: "07.15",
     RABU: "07.15",
-    KAMIS: "07.15",
+    KAMIS: "06.30",
     JUMAT: "06.30",
 };
 
